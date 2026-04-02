@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Vehicles - TowTrack</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <nav>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/vehicles">Vehicles</a>
+    <% if (req.session.role === 'Admin') { %>
+      <a href="/properties">Properties</a>
+      <a href="/towing-companies">Towing Companies</a>
+    <% } %>
+    <a href="/reports">Reports</a>
+    <form method="POST" action="/logout" style="display: inline;"><button type="submit">Logout</button></form>
+  </nav>
+  <h1>Vehicles</h1>
+  <form method="GET">
+    <input type="text" name="search" placeholder="Search..." value="<%= search || '' %>">
+    <select name="status">
+      <option value="">All Statuses</option>
+      <option value="Observed" <%= status === 'Observed' ? 'selected' : '' %>>Observed</option>
+      <option value="Warning Placed" <%= status === 'Warning Placed' ? 'selected' : '' %>>Warning Placed</option>
+      <option value="Marked for Tow" <%= status === 'Marked for Tow' ? 'selected' : '' %>>Marked for Tow</option>
+      <option value="Tow Requested" <%= status === 'Tow Requested' ? 'selected' : '' %>>Tow Requested</option>
+      <option value="Awaiting Tow Truck" <%= status === 'Awaiting Tow Truck' ? 'selected' : '' %>>Awaiting Tow Truck</option>
+      <option value="Towed" <%= status === 'Towed' ? 'selected' : '' %>>Towed</option>
+      <option value="Released" <%= status === 'Released' ? 'selected' : '' %>>Released</option>
+      <option value="Cancelled" <%= status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+      <option value="Cleared/Resolved" <%= status === 'Cleared/Resolved' ? 'selected' : '' %>>Cleared/Resolved</option>
+    </select>
+    <select name="property">
+      <option value="">All Properties</option>
+      <% properties.forEach(p => { %>
+        <option value="<%= p.id %>" <%= property == p.id ? 'selected' : '' %>><%= p.name %></option>
+      <% }); %>
+    </select>
+    <button type="submit">Filter</button>
+  </form>
+  <a href="/vehicles/add">Add Vehicle</a>
+  <table>
+    <thead>
+      <tr>
+        <th>Plate</th>
+        <th>State</th>
+        <th>Status</th>
+        <th>Property</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% vehicles.forEach(v => { %>
+        <tr>
+          <td><%= v.license_plate %></td>
+          <td><%= v.plate_state %></td>
+          <td><%= v.current_status %></td>
+          <td><%= v.property_name %></td>
+          <td><a href="/vehicles/<%= v.id %>">View</a></td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</body>
+</html>

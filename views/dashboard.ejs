@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard - TowTrack</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <nav>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/vehicles">Vehicles</a>
+    <% if (typeof req !== 'undefined' && req.session.role === 'Admin') { %>
+      <a href="/properties">Properties</a>
+      <a href="/towing-companies">Towing Companies</a>
+    <% } %>
+    <a href="/reports">Reports</a>
+    <form method="POST" action="/logout" style="display: inline;"><button type="submit">Logout</button></form>
+  </nav>
+  <h1>Dashboard</h1>
+  <div class="cards">
+    <div class="card">
+      <h2>Vehicles Entered Today</h2>
+      <p><%= entered %></p>
+    </div>
+    <div class="card">
+      <h2>Pending Tow</h2>
+      <p><%= pending %></p>
+    </div>
+    <div class="card">
+      <h2>Towed</h2>
+      <p><%= towed %></p>
+    </div>
+    <div class="card">
+      <h2>Cancelled/Resolved</h2>
+      <p><%= resolved %></p>
+    </div>
+  </div>
+  <h2>Recent Activity</h2>
+  <ul>
+    <% recent.forEach(vehicle => { %>
+      <li><a href="/vehicles/<%= vehicle.id %>"><%= vehicle.license_plate %> - <%= vehicle.current_status %> by <%= vehicle.creator %></a></li>
+    <% }); %>
+  </ul>
+</body>
+</html>
