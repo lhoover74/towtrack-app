@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Add Property - TowTrack</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <nav>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/vehicles">Vehicles</a>
+    <a href="/properties">Properties</a>
+    <a href="/towing-companies">Towing Companies</a>
+    <a href="/reports">Reports</a>
+    <form method="POST" action="/logout" style="display: inline;"><button type="submit">Logout</button></form>
+  </nav>
+  <h1>Add Property</h1>
+  <% if (error) { %>
+    <p style="color: red;"><%= error %></p>
+  <% } %>
+  <form method="POST">
+    <label>Name: <input type="text" name="name" required></label><br>
+    <label>Address: <input type="text" name="address"></label><br>
+    <label>Internal Code: <input type="text" name="internal_code"></label><br>
+    <label>Zones: <input type="text" name="zones"></label><br>
+    <label>Towing Rules: <textarea name="towing_rules"></textarea></label><br>
+    <label>Notes: <textarea name="notes"></textarea></label><br>
+    <button type="submit">Add Property</button>
+  </form>
+</body>
+</html>

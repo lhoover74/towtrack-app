@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Towing Companies - TowTrack</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <nav>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/vehicles">Vehicles</a>
+    <a href="/properties">Properties</a>
+    <a href="/towing-companies">Towing Companies</a>
+    <a href="/reports">Reports</a>
+    <form method="POST" action="/logout" style="display: inline;"><button type="submit">Logout</button></form>
+  </nav>
+  <h1>Towing Companies</h1>
+  <a href="/towing-companies/add">Add Towing Company</a>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Phone</th>
+        <th>Email</th>
+        <th>Active</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% companies.forEach(c => { %>
+        <tr>
+          <td><%= c.name %></td>
+          <td><%= c.phone %></td>
+          <td><%= c.email %></td>
+          <td><%= c.active ? 'Yes' : 'No' %></td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Add Vehicle - TowTrack</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <nav>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/vehicles">Vehicles</a>
+    <% if (req.session.role === 'Admin') { %>
+      <a href="/properties">Properties</a>
+      <a href="/towing-companies">Towing Companies</a>
+    <% } %>
+    <a href="/reports">Reports</a>
+    <form method="POST" action="/logout" style="display: inline;"><button type="submit">Logout</button></form>
+  </nav>
+  <h1>Add Vehicle</h1>
+  <% if (error) { %>
+    <p style="color: red;"><%= error %></p>
+  <% } %>
+  <form method="POST">
+    <label>License Plate: <input type="text" name="license_plate" required></label><br>
+    <label>Plate State: <input type="text" name="plate_state" required></label><br>
+    <button type="button" onclick="checkStolen()">Check Stolen (CPD)</button><br>
+    <label>VIN: <input type="text" name="vin"></label><br>
+    <label>Make: <input type="text" name="make"></label><br>
+    <label>Model: <input type="text" name="model"></label><br>
+    <label>Year: <input type="number" name="year"></label><br>
+    <label>Color: <input type="text" name="color"></label><br>
+    <label>Body Style: <input type="text" name="body_style"></label><br>
+    <label>Property: <select name="property_id">
+      <% properties.forEach(p => { %>
+        <option value="<%= p.id %>"><%= p.name %></option>
+      <% }); %>
+    </select></label><br>
+    <label>Lot/Zone/Space: <input type="text" name="lot_zone_space"></label><br>
+    <label>Exact Location: <input type="text" name="exact_location"></label><br>
+    <label>Unit/Resident: <input type="text" name="unit_resident"></label><br>
+    <label>Tow Reason: <input type="text" name="tow_reason"></label><br>
+    <label>Notes: <textarea name="notes"></textarea></label><br>
+    <label>Status: <select name="current_status">
+      <option value="Observed">Observed</option>
+      <option value="Warning Placed">Warning Placed</option>
+      <option value="Marked for Tow">Marked for Tow</option>
+      <option value="Tow Requested">Tow Requested</option>
+      <option value="Awaiting Tow Truck">Awaiting Tow Truck</option>
+      <option value="Towed">Towed</option>
+      <option value="Released">Released</option>
+      <option value="Cancelled">Cancelled</option>
+      <option value="Cleared/Resolved">Cleared/Resolved</option>
+    </select></label><br>
+    <button type="submit">Add Vehicle</button>
+  </form>
+  <script>
+    function checkStolen() {
+      const plate = document.querySelector('[name=license_plate]').value;
+      const state = document.querySelector('[name=plate_state]').value;
+      if (plate && state) {
+        window.open(`https://publicsearch2.chicagopolice.org/FindMyCar/Vehicle/Search?plate=${encodeURIComponent(plate)}&state=${encodeURIComponent(state)}`, '_blank');
+      } else {
+        alert('Enter plate and state first');
+      }
+    }
+  </script>
+</body>
+</html>

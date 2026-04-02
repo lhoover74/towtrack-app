@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Vehicle Detail - TowTrack</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <nav>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/vehicles">Vehicles</a>
+    <% if (req.session.role === 'Admin') { %>
+      <a href="/properties">Properties</a>
+      <a href="/towing-companies">Towing Companies</a>
+    <% } %>
+    <a href="/reports">Reports</a>
+    <form method="POST" action="/logout" style="display: inline;"><button type="submit">Logout</button></form>
+  </nav>
+  <h1>Vehicle: <%= vehicle.license_plate %> (<%= vehicle.plate_state %>)</h1>
+  <% if (vehicle.external_check_performed) { %>
+    <p><strong>CPD Checked</strong> at <%= vehicle.external_check_last_at %> by <%= vehicle.checker %></p>
+  <% } %>
+  <button onclick="checkStolen()">Check Stolen (CPD)</button>
+  <p>Status: <%= vehicle.current_status %></p>
+  <p>VIN: <%= vehicle.vin %></p>
+  <p>Make: <%= vehicle.make %></p>
+  <p>Model: <%= vehicle.model %></p>
+  <p>Year: <%= vehicle.year %></p>
+  <p>Color: <%= vehicle.color %></p>
+  <p>Body Style: <%= vehicle.body_style %></p>
+  <p>Property: <%= vehicle.property_name %></p>
+  <p>Lot/Zone/Space: <%= vehicle.lot_zone_space %></p>
+  <p>Exact Location: <%= vehicle.exact_location %></p>
+  <p>Unit/Resident: <%= vehicle.unit_resident %></p>
+  <p>Tow Reason: <%= vehicle.tow_reason %></p>
+  <p>Notes: <%= vehicle.notes %></p>
+  <p>Towing Company: <%= vehicle.towing_company_name %></p>
+  <p>Tow Ref: <%= vehicle.tow_ref %></p>
+  <p>Created by: <%= vehicle.creator %> at <%= vehicle.created_at %></p>
+  <p>Last Updated by: <%= vehicle.updater %> at <%= vehicle.updated_at %></p>
+  <h2>Update Vehicle</h2>
+  <form method="POST" action="/vehicles/<%= vehicle.id %>/update">
+    <label>License Plate: <input type="text" name="license_plate" value="<%= vehicle.license_plate %>"></label><br>
+    <label>Plate State: <input type="text" name="plate_state" value="<%= vehicle.plate_state %>"></label><br>
+    <label>VIN: <input type="text" name="vin" value="<%= vehicle.vin %>"></label><br>
+    <label>Make: <input type="text" name="make" value="<%= vehicle.make %>"></label><br>
+    <label>Model: <input type="text" name="model" value="<%= vehicle.model %>"></label><br>
+    <label>Year: <input type="number" name="year" value="<%= vehicle.year %>"></label><br>
+    <label>Color: <input type="text" name="color" value="<%= vehicle.color %>"></label><br>
+    <label>Body Style: <input type="text" name="body_style" value="<%= vehicle.body_style %>"></label><br>
+    <label>Property: <select name="property_id">
+      <% properties.forEach(p => { %>
+        <option value="<%= p.id %>" <%= vehicle.property_id == p.id ? 'selected' : '' %>><%= p.name %></option>
+      <% }); %>
+    </select></label><br>
+    <label>Lot/Zone/Space: <input type="text" name="lot_zone_space" value="<%= vehicle.lot_zone_space %>"></label><br>
+    <label>Exact Location: <input type="text" name="exact_location" value="<%= vehicle.exact_location %>"></label><br>
+    <label>Unit/Resident: <input type="text" name="unit_resident" value="<%= vehicle.unit_resident %>"></label><br>
+    <label>Tow Reason: <input type="text" name="tow_reason" value="<%= vehicle.tow_reason %>"></label><br>
+    <label>Notes: <textarea name="notes"><%= vehicle.notes %></textarea></label><br>
+    <label>Status: <select name="current_status">
+      <option value="Observed" <%= vehicle.current_status === 'Observed' ? 'selected' : '' %>>Observed</option>
+      <option value="Warning Placed" <%= vehicle.current_status === 'Warning Placed' ? 'selected' : '' %>>Warning Placed</option>
+      <option value="Marked for Tow" <%= vehicle.current_status === 'Marked for Tow' ? 'selected' : '' %>>Marked for Tow</option>
+      <option value="Tow Requested" <%= vehicle.current_status === 'Tow Requested' ? 'selected' : '' %>>Tow Requested</option>
+      <option value="Awaiting Tow Truck" <%= vehicle.current_status === 'Awaiting Tow Truck' ? 'selected' : '' %>>Awaiting Tow Truck</option>
+      <option value="Towed" <%= vehicle.current_status === 'Towed' ? 'selected' : '' %>>Towed</option>
+      <option value="Released" <%= vehicle.current_status === 'Released' ? 'selected' : '' %>>Released</option>
+      <option value="Cancelled" <%= vehicle.current_status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+      <option value="Cleared/Resolved" <%= vehicle.current_status === 'Cleared/Resolved' ? 'selected' : '' %>>Cleared/Resolved</option>
+    </select></label><br>
+    <label>Towing Company: <select name="towing_company_id">
+      <option value="">None</option>
+      <% towingCompanies.forEach(tc => { %>
+        <option value="<%= tc.id %>" <%= vehicle.towing_company_id == tc.id ? 'selected' : '' %>><%= tc.name %></option>
+      <% }); %>
+    </select></label><br>
+    <label>Tow Ref: <input type="text" name="tow_ref" value="<%= vehicle.tow_ref %>"></label><br>
+    <button type="submit">Update</button>
+  </form>
+  <h2>History</h2>
+  <ul>
+    <% history.forEach(h => { %>
+      <li><%= h.status %> at <%= h.timestamp %> by <%= h.user_id %></li>
+    <% }); %>
+  </ul>
+  <h2>Photos</h2>
+  <form method="POST" action="/vehicles/<%= vehicle.id %>/upload" enctype="multipart/form-data">
+    <input type="file" name="photo" accept="image/*">
+    <input type="text" name="label" placeholder="Label">
+    <button type="submit">Upload</button>
+  </form>
+  <% photos.forEach(p => { %>
+    <img src="/<%= p.file_path %>" alt="<%= p.label %>" style="max-width: 200px;">
+  <% }); %>
+  <h2>Activity</h2>
+  <ul>
+    <% activities.forEach(a => { %>
+      <li><%= a.action_type %>: <%= a.description %> by <%= a.username %> at <%= a.timestamp %></li>
+    <% }); %>
+  </ul>
+  <script>
+    function checkStolen() {
+      fetch('/vehicles/<%= vehicle.id %>/check-stolen', { method: 'POST' }).then(() => {
+        window.open(`https://publicsearch2.chicagopolice.org/FindMyCar/Vehicle/Search?plate=${encodeURIComponent('<%= vehicle.license_plate %>')}&state=${encodeURIComponent('<%= vehicle.plate_state %>')}`, '_blank');
+      });
+    }
+  </script>
+</body>
+</html>

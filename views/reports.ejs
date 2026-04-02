@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Reports - TowTrack</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <nav>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/vehicles">Vehicles</a>
+    <% if (req.session.role === 'Admin') { %>
+      <a href="/properties">Properties</a>
+      <a href="/towing-companies">Towing Companies</a>
+    <% } %>
+    <a href="/reports">Reports</a>
+    <form method="POST" action="/logout" style="display: inline;"><button type="submit">Logout</button></form>
+  </nav>
+  <h1>Reports</h1>
+  <h2>Open Tow List</h2>
+  <ul>
+    <% open.forEach(v => { %>
+      <li><%= v.license_plate %> - <%= v.property_name %> - <%= v.current_status %></li>
+    <% }); %>
+  </ul>
+  <h2>Completed Tow History</h2>
+  <ul>
+    <% completed.forEach(v => { %>
+      <li><%= v.license_plate %> - <%= v.property_name %> - <%= v.towing_company_name %></li>
+    <% }); %>
+  </ul>
+  <h2>Cancelled/Resolved</h2>
+  <ul>
+    <% cancelled.forEach(v => { %>
+      <li><%= v.license_plate %> - <%= v.property_name %></li>
+    <% }); %>
+  </ul>
+  <h2>Counts by Property</h2>
+  <ul>
+    <% byProperty.forEach(p => { %>
+      <li><%= p.name %>: <%= p.count %></li>
+    <% }); %>
+  </ul>
+  <h2>Counts by Tow Reason</h2>
+  <ul>
+    <% byReason.forEach(r => { %>
+      <li><%= r.tow_reason %>: <%= r.count %></li>
+    <% }); %>
+  </ul>
+  <h2>Counts by Towing Company</h2>
+  <ul>
+    <% byCompany.forEach(c => { %>
+      <li><%= c.name %>: <%= c.count %></li>
+    <% }); %>
+  </ul>
+</body>
+</html>

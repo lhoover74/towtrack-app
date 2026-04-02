@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Properties - TowTrack</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <nav>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/vehicles">Vehicles</a>
+    <a href="/properties">Properties</a>
+    <a href="/towing-companies">Towing Companies</a>
+    <a href="/reports">Reports</a>
+    <form method="POST" action="/logout" style="display: inline;"><button type="submit">Logout</button></form>
+  </nav>
+  <h1>Properties</h1>
+  <a href="/properties/add">Add Property</a>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Address</th>
+        <th>Internal Code</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% properties.forEach(p => { %>
+        <tr>
+          <td><%= p.name %></td>
+          <td><%= p.address %></td>
+          <td><%= p.internal_code %></td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</body>
+</html>
